@@ -1,4 +1,4 @@
-//SPDX-License-Identifer: MIT
+//SPDX-License-Identifier: MIT
 
 pragma solidity ^0.8.13;
 
@@ -38,6 +38,25 @@ contract FractionalWrapper is ERC20Mock, Ownable {
         underlying = underlying_;
     }
 
+    // Only the owner can call to modify exchange rate
+    function setExchangeRate(uint256 exRate_) external onlyOwner {
+        exRate = exRate_;
+    }
+
+    // Calculate how much yvDAI user should get based on exchange rate
+    function convertToShares(
+        uint256 assets
+    ) public view returns (uint256 shares) {
+        return (assets * exRate) / 1e27;
+    }
+
+    // Calculate how much DAI user should get based on exchange rate
+    function convertToAssets(
+        uint256 shares
+    ) public view returns (uint256 assets) {
+        return (shares * 1e27) / exRate;
+    }
+
     function deposit(
         uint256 assets,
         address receiver
@@ -75,6 +94,30 @@ contract FractionalWrapper is ERC20Mock, Ownable {
         burn(owner, shares);
 
         //transfer assets
+        bool success = underlying.transfer(receiver, assets);
+        require(success, "Transfer failed!");
+        emit Withdraw(msg.sender, receiver, owner, assets, shares);
+    }
+
+    function redeem(
+        uint256 shares,
+        address receiver,
+        address owner
+    ) external returns (uint256 assets) {
+        assets = convertToAssets(shares);
+
+        // MUST support a redeem flow where the shares are burned from owner directly where owner is msg.sender,
+        // OR msg.sender has ERC20 approval over the shares of owner
+        if (msg.sender != owner) {
+            uint allowedShares = _allowance[owner][receiver];
+            require(allowedShares >= shares, "Allowance exceeded");
+            _allowance[owner][receiver] = allowedShares - shares;
+        }
+
+        // Burn wrapped tokens(shares) -> yvDAI
+        burn(owner, shares);
+
+        // Transfer assets
         bool success = underlying.transfer(receiver, assets);
         require(success, "Transfer failed!");
         emit Withdraw(msg.sender, receiver, owner, assets, shares);
