@@ -122,4 +122,16 @@ contract FractionalWrapper is ERC20Mock, Ownable {
         require(success, "Transfer failed!");
         emit Withdraw(msg.sender, receiver, owner, assets, shares);
     }
+
+    function previewDeposit(
+        uint256 assets
+    ) external view returns (uint256 shares) {
+        return convertToShares(assets);
+    }
+
+    function previewWithdraw(
+        uint256 assets
+    ) external view returns (uint256 shares) {
+        shares = convertToShares(assets);
+    }
 }
