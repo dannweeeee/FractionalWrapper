@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
 import "lib/forge-std/src/Test.sol";
@@ -263,10 +263,10 @@ contract StateRateChangesTest is StateRateChanges {
 
         // inject extra DAI into Wrapper to simulate payout
         stdstore
-        .target(address(dai))
-        .sig(dai.balanceOf.selector).with_key(address(wrapper)).checked_write( //select balanceOf mapping
-                10000 * 10 ** 18
-            ); //set mapping key balanceOf(address(vault)) //data to be written to the storage slot -> balanceOf(address(vault)) = 10000*10**18
+            .target(address(dai))
+            .sig(dai.balanceOf.selector)
+            .with_key(address(wrapper))
+            .checked_write(10000 * 10 ** 18); //select balanceOf mapping //set mapping key balanceOf(address(vault)) //data to be written to the storage slot -> balanceOf(address(vault)) = 10000*10**18
 
         vm.expectEmit(true, true, true, true);
         emit Withdraw(user, user, user, assets, userTokens / 2); //asset = 50000000000000000000  | shares = 50000000000000000000
