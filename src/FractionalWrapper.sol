@@ -134,4 +134,57 @@ contract FractionalWrapper is ERC20Mock, Ownable {
     ) external view returns (uint256 shares) {
         shares = convertToShares(assets);
     }
+
+    function asset() external view returns (address assetTokenAssets) {
+        assetTokenAssets = address(underlying);
+    }
+
+    function totalAssets() external view returns (uint256 totalManagedAssets) {
+        totalManagedAssets = underlying.balanceOf(address(this));
+    }
+
+    function maxDeposit() external view virtual returns (uint256 maxAssets) {
+        maxAssets = type(uint256).max;
+    }
+
+    function maxMint() external view virtual returns (uint maxShares) {
+        maxShares = type(uint256).max;
+    }
+
+    function previewMint(
+        uint256 shares
+    ) external view returns (uint256 assets) {
+        assets = convertToAssets(shares);
+    }
+
+    function mint(
+        uint256 shares,
+        address receiver
+    ) external returns (uint256 assets) {
+        assets = convertToAssets(shares);
+        bool sent = underlying.transferFrom(msg.sender, address(this), assets);
+        require(sent, "Transfer failed!");
+
+        bool success = _mint(receiver, shares);
+        require(success, "Mint failed!");
+        emit Deposit(msg.sender, receiver, assets, shares);
+    }
+
+    function maxWithdraw(
+        address owner
+    ) external view returns (uint256 maxAssets) {
+        maxAssets = convertToAssets(_balanceOf[owner]);
+    }
+
+    function maxRedeem(
+        address owner
+    ) external view returns (uint256 maxShares) {
+        maxShares = _balanceOf[owner];
+    }
+
+    function previewRedeem(
+        uint256 shares
+    ) external view returns (uint256 assets) {
+        assets = convertToAssets(shares);
+    }
 }
