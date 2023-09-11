@@ -13,7 +13,7 @@ Problem Statement: https://github.com/yieldprotocol/mentorship2022/issues/4
 * User sends DAI to FWrapper.
 * User receives wDAI, (wDAI = DAI * ex_rate)
 * Exchange rate set by FWrapper owner
-* Ex_rate is has decimal precision of 10**27 precision
+* Ex_rate has decimal precision of 10**27 precision
 * User can liquidate and get back underlying DAI, (wDAI is burnt) ---> dai_qty = wDAI/ex_rate
 
 ### Contracts
@@ -22,6 +22,6 @@ Problem Statement: https://github.com/yieldprotocol/mentorship2022/issues/4
 3. Ownable.sol - for onlyOwner modifier, applied on setExchangeRate
 
 Both contracts are ERC20Mock, to issue tokens. 
-FractionalWrapper must conform to ERC4626 specification.
+FractionalWrapper must conform to ERC4626 specifications.
 - All methods must be implemented
 - Implementation of convert* and preview* will be identical in this case (no need to calculate some time-weighted average for convert*).
