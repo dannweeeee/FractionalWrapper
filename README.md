@@ -1,66 +1,35 @@
-## Foundry
+# Fractional Wrapper
+Project #4 for Arcane x CertiK Developer Workshop <br>
+Problem Statement: https://github.com/yieldprotocol/mentorship2022/issues/4
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+## Objectives
+Users can send a pre-specified erc-20 token (underlying) to an ERC20 contract(Fractional Wrapper).
 
-Foundry consists of:
+Fractional Wrapper contract issues a number of Wrapper tokens to the sender, equal to the deposit multiplied by a fractional number, called exchange rate.
+Exchange rate is set by the contract owner. 
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+This number is in the range of [0, 1000000000000000000], and available in increments of 10**-27. (ray).
 
-## Documentation
+At any point, a holder of Wrapper tokens can burn them to recover an amount of underlying equal to the amount of Wrapper tokens burned, divided by the exchange rate.
 
-https://book.getfoundry.sh/
+1. User sends DAI to FWrapper.
+2. User receives wDAI(wDAI = DAI * ex_rate)
+3. Exchange rate set by FWrapper owner
+4. Ex_rate is has decimal precision of 10**27 precision
+5. User can liquidate and get back underlying DAI, (wDAI is burnt)
+---> dai_qty = wDAI/ex_rate
 
-## Usage
+### Contracts
+1. DAIToken - underlying
+2. FractionalWrapper - "vault w/ ex_rate" 
+3. Ownable.sol - for onlyOwner modifier, applied on setExchangeRate
 
-### Build
+Both contracts are ERC20Mock, to issue tokens. 
+FractionalWrapper must conform to ERC4626 specification.
+- all methods must be implemented
+- implementation of convert* and preview* will be identical in this case (no need to calculate some time-weighted average for convert*).
 
-```shell
-$ forge build
-```
-
-### Test
-
-```shell
-$ forge test
-```
-
-### Format
-
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+### Functions 
+maxDeposit/maxMint 
+- Dropped receiver param as specified in EIP4626, as there was no need for it in this use case.
+- made virutal so it can be overwritten for another use case.
