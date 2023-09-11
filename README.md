@@ -1,5 +1,5 @@
 # Fractional Wrapper
-Project #4 for Arcane x CertiK Developer Workshop https://calnix.gitbook.io/eth-dev/ <br>
+Project #4 for Arcane x CertiK Developer Workshop: https://calnix.gitbook.io/eth-dev/ <br>
 Problem Statement: https://github.com/yieldprotocol/mentorship2022/issues/4
 
 ## Objectives
