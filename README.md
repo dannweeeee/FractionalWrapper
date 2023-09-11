@@ -7,7 +7,7 @@ Problem Statement: https://github.com/yieldprotocol/mentorship2022/issues/4
 * Fractional Wrapper contract issues a number of Wrapper tokens to the sender, equal to the deposit multiplied by a fractional number, called exchange rate. Exchange rate is set by the contract owner.
 * This number is in the range of [0, 1e18], and available in increments of 10**-27. (ray).
 * At any point, a holder of Wrapper tokens can burn them to recover an amount of underlying equal to the amount of Wrapper tokens burned, divided by the exchange rate.
-* This Fractional Wrapper can conform to the ERC4626 specification[https://eips.ethereum.org/EIPS/eip-4626]. 
+* This Fractional Wrapper can conform to the [ERC4626 specification](https://eips.ethereum.org/EIPS/eip-4626). 
 
 ### Process
 * User sends DAI to FWrapper.
